@@ -179,11 +179,6 @@ impl From<WPARAM> for MouseButtons {
     }
 }
 
-#[derive(Clone, Debug)]
-pub struct MouseState {
-    pub buttons: MouseButtons,
-}
-
 #[derive(Clone, Copy, PartialEq, Eq, Hash, Debug)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub enum MouseWheelAxis {

@@ -1,8 +1,5 @@
 #[cfg(windows)]
-use windows::Win32::{
-    Foundation::{LPARAM, WPARAM},
-    UI::Input::KeyboardAndMouse::*,
-};
+use windows::Win32::UI::Input::KeyboardAndMouse::*;
 
 #[derive(Clone, Copy, PartialEq, Eq, Hash, Debug)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]

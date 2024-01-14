@@ -2,6 +2,12 @@
 name = "gdueiv"
 version = "0.1.0"
 edition = "2021"
+description = "geometry and devices in GUI library"
+repository = "https://github.com/btanno/gdueiv"
+license = "MIT"
+readme = "README.md"
+categories = ["gui"]
+keywords = ["gui"]
 
 [features]
 serde = ["dep:serde"]

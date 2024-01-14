@@ -1,3 +1,6 @@
+#[cfg(windows)]
+use windows::Win32::Foundation::{POINT, RECT, SIZE};
+
 pub mod coord {
     #[derive(Clone, Copy, PartialEq, Eq, Hash, Debug)]
     pub struct Logical;
@@ -103,7 +106,7 @@ impl<T, Coord> Rect<T, Coord> {
     #[inline]
     pub fn from_position_size(position: Position<T, Coord>, size: Size<T, Coord>) -> Self
     where
-        T: std::ops::Add<T, Output = T> + Clone
+        T: std::ops::Add<T, Output = T> + Clone,
     {
         Self {
             left: position.x.clone(),
@@ -113,7 +116,7 @@ impl<T, Coord> Rect<T, Coord> {
             _coord: std::marker::PhantomData,
         }
     }
-    
+
     #[inline]
     pub fn left_top(&self) -> Position<T, Coord>
     where
@@ -135,6 +138,65 @@ pub type PhysicalRect<T> = Rect<T, coord::Physical>;
 pub type LogicalRect<T> = Rect<T, coord::Logical>;
 
 pub const DEFAULT_DPI: u32 = 96;
+
+#[cfg(windows)]
+impl From<PhysicalPosition<i32>> for POINT {
+    #[inline]
+    fn from(value: PhysicalPosition<i32>) -> Self {
+        Self {
+            x: value.x,
+            y: value.y,
+        }
+    }
+}
+
+#[cfg(windows)]
+impl From<POINT> for PhysicalPosition<i32> {
+    #[inline]
+    fn from(value: POINT) -> Self {
+        Self::new(value.x, value.y)
+    }
+}
+
+#[cfg(windows)]
+impl From<PhysicalSize<u32>> for SIZE {
+    #[inline]
+    fn from(value: PhysicalSize<u32>) -> SIZE {
+        SIZE {
+            cx: value.width as i32,
+            cy: value.height as i32,
+        }
+    }
+}
+
+#[cfg(windows)]
+impl From<SIZE> for PhysicalSize<u32> {
+    #[inline]
+    fn from(value: SIZE) -> Self {
+        PhysicalSize::new(value.cx as u32, value.cy as u32)
+    }
+}
+
+#[cfg(windows)]
+impl From<PhysicalRect<i32>> for RECT {
+    #[inline]
+    fn from(value: PhysicalRect<i32>) -> Self {
+        RECT {
+            left: value.left,
+            top: value.top,
+            right: value.right,
+            bottom: value.bottom,
+        }
+    }
+}
+
+#[cfg(windows)]
+impl From<RECT> for PhysicalRect<i32> {
+    #[inline]
+    fn from(value: RECT) -> Self {
+        Self::new(value.left, value.top, value.right, value.bottom)
+    }
+}
 
 pub trait ToLogical<T> {
     type Output<U>;

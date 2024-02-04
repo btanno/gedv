@@ -35,6 +35,30 @@ pub type PhysicalPosition<T> = Position<T, coord::Physical>;
 pub type LogicalPosition<T> = Position<T, coord::Logical>;
 pub type ScreenPosition<T> = Position<T, coord::Screen>;
 
+impl<T, Coord> std::ops::Mul<T> for Position<T, Coord>
+where
+    T: std::ops::Mul<Output = T> + Copy,
+{
+    type Output = Position<T, Coord>;
+
+    #[inline]
+    fn mul(self, rhs: T) -> Self::Output {
+        Self::new(self.x * rhs, self.y * rhs)
+    }
+}
+
+impl<T, Coord> std::ops::Div<T> for Position<T, Coord>
+where
+    T: std::ops::Div<Output = T> + Copy,
+{
+    type Output = Position<T, Coord>;
+
+    #[inline]
+    fn div(self, rhs: T) -> Self::Output {
+        Self::new(self.x / rhs, self.y / rhs)
+    }
+}
+
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct Size<T, Coord> {
@@ -56,6 +80,31 @@ impl<T, Coord> Size<T, Coord> {
 
 pub type PhysicalSize<T> = Size<T, coord::Physical>;
 pub type LogicalSize<T> = Size<T, coord::Logical>;
+
+impl<T, Coord> std::ops::Mul<T> for Size<T, Coord>
+where
+    T: std::ops::Mul<Output = T> + Copy,
+{
+    type Output = Size<T, Coord>;
+
+    #[inline]
+    fn mul(self, rhs: T) -> Self::Output {
+        Self::new(self.width * rhs, self.height * rhs)
+    }
+}
+
+
+impl<T, Coord> std::ops::Div<T> for Size<T, Coord>
+where
+    T: std::ops::Div<Output = T> + Copy,
+{
+    type Output = Size<T, Coord>;
+
+    #[inline]
+    fn div(self, rhs: T) -> Self::Output {
+        Self::new(self.width / rhs, self.height / rhs)
+    }
+}
 
 impl<T, Coord> std::ops::Add<Size<T, Coord>> for Position<T, Coord>
 where
@@ -147,6 +196,74 @@ impl<T, Coord> Rect<T, Coord> {
 
 pub type PhysicalRect<T> = Rect<T, coord::Physical>;
 pub type LogicalRect<T> = Rect<T, coord::Logical>;
+
+impl<T, Coord> std::ops::Mul<T> for Rect<T, Coord>
+where
+    T: std::ops::Mul<Output = T> + Copy,
+{
+    type Output = Rect<T, Coord>;
+
+    #[inline]
+    fn mul(self, rhs: T) -> Self::Output {
+        Self::new(
+            self.left * rhs,
+            self.top * rhs,
+            self.right * rhs,
+            self.bottom * rhs,
+        )
+    }
+}
+
+impl<T, Coord> std::ops::Div<T> for Rect<T, Coord>
+where
+    T: std::ops::Div<Output = T> + Copy,
+{
+    type Output = Rect<T, Coord>;
+
+    #[inline]
+    fn div(self, rhs: T) -> Self::Output {
+        Self::new(
+            self.left / rhs,
+            self.top / rhs,
+            self.right / rhs,
+            self.bottom / rhs,
+        )
+    }
+}
+
+impl<T, Coord> std::ops::Add<Position<T, Coord>> for Rect<T, Coord>
+where
+    T: std::ops::Add<Output = T> + Copy,
+{
+    type Output = Rect<T, Coord>;
+
+    #[inline]
+    fn add(self, rhs: Position<T, Coord>) -> Self::Output {
+        Self::new(
+            self.left + rhs.x,
+            self.top + rhs.y,
+            self.right + rhs.x,
+            self.bottom + rhs.y,
+        )
+    }
+}
+
+impl<T, Coord> std::ops::Add<Rect<T, Coord>> for Position<T, Coord>
+where
+    T: std::ops::Add<Output = T> + Copy,
+{
+    type Output = Rect<T, Coord>;
+
+    #[inline]
+    fn add(self, rhs: Rect<T, Coord>) -> Self::Output {
+        Rect::new(
+            rhs.left + self.x,
+            rhs.top + self.y,
+            rhs.right + self.x,
+            rhs.bottom + self.y,
+        )
+    }
+}
 
 pub const DEFAULT_DPI: u32 = 96;
 
@@ -493,5 +610,79 @@ mod tests {
         let src = PhysicalRect::new(6, 128, 256, 64);
         let dest = src.to_physical(DEFAULT_DPI * 2);
         assert!(src == dest);
+    }
+
+    #[test]
+    fn position_mul() {
+        let src = LogicalPosition::new(3, 4);
+        let dest = src * 3;
+        assert!(dest == LogicalPosition::new(9, 12));
+    }
+
+    #[test]
+    fn size_mul() {
+        let src = LogicalSize::new(3, 4);
+        let dest = src * 3;
+        assert!(dest == LogicalSize::new(9, 12));
+    }
+
+    #[test]
+    fn rect_mul() {
+        let src = LogicalRect::new(1, 2, 3, 4);
+        let dest = src * 3;
+        assert!(dest == LogicalRect::new(3, 6, 9, 12));
+    }
+
+    #[test]
+    fn position_div() {
+        let src = LogicalPosition::new(3, 6);
+        let dest = src / 3;
+        assert!(dest == LogicalPosition::new(1, 2));
+    }
+
+    #[test]
+    fn size_div() {
+        let src = LogicalSize::new(3, 6);
+        let dest = src / 3;
+        assert!(dest == LogicalSize::new(1, 2));
+    }
+
+    #[test]
+    fn rect_div() {
+        let src = LogicalRect::new(3, 6, 9, 12);
+        let dest = src / 3;
+        assert!(dest == LogicalRect::new(1, 2, 3, 4));
+    }
+
+    #[test]
+    fn add_position_and_size() {
+        let lhs = LogicalPosition::new(1, 2);
+        let rhs = LogicalSize::new(10, 11);
+        let dest = lhs + rhs;
+        assert!(dest == LogicalPosition::new(11, 13));
+    }
+
+    #[test]
+    fn add_size_and_position() {
+        let lhs = LogicalSize::new(10, 11);
+        let rhs = LogicalPosition::new(1, 2);
+        let dest = lhs + rhs;
+        assert!(dest == LogicalPosition::new(11, 13));
+    }
+
+    #[test]
+    fn add_rect_and_position() {
+        let lhs = LogicalRect::new(1, 2, 3, 4);
+        let rhs = LogicalPosition::new(10, 11);
+        let dest = lhs + rhs;
+        assert!(dest == LogicalRect::new(11, 13, 13, 15));
+    }
+
+    #[test]
+    fn add_position_and_rect() {
+        let lhs = LogicalPosition::new(10, 11);
+        let rhs = LogicalRect::new(1, 2, 3, 4);
+        let dest = lhs + rhs;
+        assert!(dest == LogicalRect::new(11, 13, 13, 15));
     }
 }

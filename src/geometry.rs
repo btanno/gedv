@@ -102,6 +102,17 @@ impl<T, Coord> Rect<T, Coord> {
             _coord: std::marker::PhantomData,
         }
     }
+    
+    #[inline]
+    pub fn from_positions(left_top: Position<T, Coord>, right_bottom: Position<T, Coord>) -> Self {
+        Self {
+            left: left_top.x,
+            top: left_top.y,
+            right: right_bottom.x,
+            bottom: right_bottom.y,
+            _coord: std::marker::PhantomData,
+        }
+    }
 
     #[inline]
     pub fn from_position_size(position: Position<T, Coord>, size: Size<T, Coord>) -> Self

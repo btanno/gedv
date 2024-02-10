@@ -15,7 +15,7 @@ pub enum MouseButton {
 }
 
 impl MouseButton {
-    const EX_LEN: u32 = 29;
+    pub const EX_LEN: u32 = 29;
 
     fn as_u32(&self) -> u32 {
         match self {

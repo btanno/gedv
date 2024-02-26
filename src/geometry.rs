@@ -93,7 +93,6 @@ where
     }
 }
 
-
 impl<T, Coord> std::ops::Div<T> for Size<T, Coord>
 where
     T: std::ops::Div<Output = T> + Copy,
@@ -151,7 +150,7 @@ impl<T, Coord> Rect<T, Coord> {
             _coord: std::marker::PhantomData,
         }
     }
-    
+
     #[inline]
     pub fn from_positions(left_top: Position<T, Coord>, right_bottom: Position<T, Coord>) -> Self {
         Self {
@@ -186,11 +185,38 @@ impl<T, Coord> Rect<T, Coord> {
     }
 
     #[inline]
+    pub fn left_bottom(&self) -> Position<T, Coord>
+    where
+        T: Clone,
+    {
+        Position::new(self.left.clone(), self.bottom.clone())
+    }
+
+    #[inline]
+    pub fn right_top(&self) -> Position<T, Coord>
+    where
+        T: Clone,
+    {
+        Position::new(self.right.clone(), self.top.clone())
+    }
+
+    #[inline]
     pub fn right_bottom(&self) -> Position<T, Coord>
     where
         T: Clone,
     {
         Position::new(self.right.clone(), self.bottom.clone())
+    }
+
+    #[inline]
+    pub fn size(&self) -> Size<T, Coord>
+    where
+        T: Clone + std::ops::Sub<Output = T>,
+    {
+        Size::new(
+            self.right.clone() - self.left.clone(),
+            self.bottom.clone() - self.top.clone(),
+        )
     }
 }
 

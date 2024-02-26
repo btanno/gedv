@@ -1,4 +1,6 @@
-# gdueiv
+# gedv
+
+geometry and devices in GUI library
 
 ## License
 

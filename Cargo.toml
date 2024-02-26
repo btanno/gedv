@@ -1,9 +1,9 @@
 [package]
-name = "gdueiv"
+name = "gedv"
 version = "0.1.3"
 edition = "2021"
 description = "geometry and devices in GUI library"
-repository = "https://github.com/btanno/gdueiv"
+repository = "https://github.com/btanno/gedv"
 license = "MIT"
 readme = "README.md"
 categories = ["gui"]

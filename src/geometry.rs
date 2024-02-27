@@ -31,6 +31,13 @@ impl<T, Coord> Position<T, Coord> {
     }
 }
 
+impl<T, Coord> From<(T, T)> for Position<T, Coord> {
+    #[inline]
+    fn from(value: (T, T)) -> Self {
+        Position::new(value.0, value.1)
+    }
+}
+
 pub type PhysicalPosition<T> = Position<T, coord::Physical>;
 pub type LogicalPosition<T> = Position<T, coord::Logical>;
 pub type ScreenPosition<T> = Position<T, coord::Screen>;
@@ -75,6 +82,13 @@ impl<T, Coord> Size<T, Coord> {
             height,
             _coord: std::marker::PhantomData,
         }
+    }
+}
+
+impl<T, Coord> From<(T, T)> for Size<T, Coord> {
+    #[inline]
+    fn from(value: (T, T)) -> Self {
+        Size::new(value.0, value.1)
     }
 }
 
@@ -152,7 +166,9 @@ impl<T, Coord> Rect<T, Coord> {
     }
 
     #[inline]
-    pub fn from_positions(left_top: Position<T, Coord>, right_bottom: Position<T, Coord>) -> Self {
+    pub fn from_positions(left_top: impl Into<Position<T, Coord>>, right_bottom: impl Into<Position<T, Coord>>) -> Self {
+        let left_top = left_top.into();
+        let right_bottom = right_bottom.into();
         Self {
             left: left_top.x,
             top: left_top.y,
@@ -163,10 +179,12 @@ impl<T, Coord> Rect<T, Coord> {
     }
 
     #[inline]
-    pub fn from_position_size(position: Position<T, Coord>, size: Size<T, Coord>) -> Self
+    pub fn from_position_size(position: impl Into<Position<T, Coord>>, size: impl Into<Size<T, Coord>>) -> Self
     where
         T: std::ops::Add<T, Output = T> + Clone,
     {
+        let position = position.into();
+        let size = size.into();
         Self {
             left: position.x.clone(),
             top: position.y.clone(),
@@ -217,6 +235,13 @@ impl<T, Coord> Rect<T, Coord> {
             self.right.clone() - self.left.clone(),
             self.bottom.clone() - self.top.clone(),
         )
+    }
+}
+
+impl<T, Coord> From<(T, T, T, T)> for Rect<T, Coord> {
+    #[inline]
+    fn from(value: (T, T, T, T)) -> Self {
+        Rect::new(value.0, value.1, value.2, value.3)
     }
 }
 

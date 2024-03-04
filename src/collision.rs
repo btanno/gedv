@@ -102,7 +102,9 @@ mod tests {
     #[test]
     fn point_contains_rect() {
         let p = LogicalPosition::new(10, 10);
-        assert!(!contains(&p, &LogicalRect::from_position_size((10, 10), (11, 11))));
+        assert!(contains(&p, &LogicalRect::from_position_size((10, 10), (11, 11))));
+        assert!(contains(&p, &LogicalRect::from_position_size((9, 9), (10, 10))));
+        assert!(!contains(&p, &LogicalRect::from_position_size((11, 11), (12, 12))));
     }
 
     #[test]

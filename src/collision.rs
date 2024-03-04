@@ -104,6 +104,7 @@ mod tests {
         let p = LogicalPosition::new(10, 10);
         assert!(contains(&p, &LogicalRect::from_position_size((10, 10), (11, 11))));
         assert!(contains(&p, &LogicalRect::from_position_size((9, 9), (10, 10))));
+        assert!(contains(&p, &LogicalRect::from_position_size((1, 1), (20, 20))));
         assert!(!contains(&p, &LogicalRect::from_position_size((11, 11), (12, 12))));
     }
 

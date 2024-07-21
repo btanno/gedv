@@ -1,7 +1,7 @@
 use super::*;
 
 #[cfg(windows)]
-use windows::Win32::Foundation::WPARAM;
+use windows::Win32::{Foundation::WPARAM, System::SystemServices::*};
 
 pub type ButtonState = KeyState;
 
@@ -175,7 +175,20 @@ impl From<&Vec<MouseButton>> for MouseButtons {
 #[cfg(windows)]
 impl From<WPARAM> for MouseButtons {
     fn from(value: WPARAM) -> Self {
-        Self((value.0 & 0xffff) as u32)
+        let flags = MODIFIERKEYS_FLAGS(value.0 as u32);
+        let mut buttons = MouseButtons::new();
+        if flags.contains(MK_LBUTTON) {
+            buttons.0 |= MouseButton::Left.as_u32();
+        } else if flags.contains(MK_RBUTTON) {
+            buttons.0 |= MouseButton::Right.as_u32();
+        } else if flags.contains(MK_MBUTTON) {
+            buttons.0 |= MouseButton::Middle.as_u32();
+        } else if flags.contains(MK_XBUTTON1) {
+            buttons.0 |= MouseButton::Ex(0).as_u32();
+        } else if flags.contains(MK_XBUTTON2) {
+            buttons.0 |= MouseButton::Ex(1).as_u32();
+        }
+        buttons
     }
 }
 

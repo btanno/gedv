@@ -166,7 +166,10 @@ impl<T, Coord> Rect<T, Coord> {
     }
 
     #[inline]
-    pub fn from_positions(left_top: impl Into<Position<T, Coord>>, right_bottom: impl Into<Position<T, Coord>>) -> Self {
+    pub fn from_positions(
+        left_top: impl Into<Position<T, Coord>>,
+        right_bottom: impl Into<Position<T, Coord>>,
+    ) -> Self {
         let left_top = left_top.into();
         let right_bottom = right_bottom.into();
         Self {
@@ -179,7 +182,10 @@ impl<T, Coord> Rect<T, Coord> {
     }
 
     #[inline]
-    pub fn from_position_size(position: impl Into<Position<T, Coord>>, size: impl Into<Size<T, Coord>>) -> Self
+    pub fn from_position_size(
+        position: impl Into<Position<T, Coord>>,
+        size: impl Into<Size<T, Coord>>,
+    ) -> Self
     where
         T: std::ops::Add<T, Output = T> + Clone,
     {

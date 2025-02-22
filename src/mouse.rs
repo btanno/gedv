@@ -137,14 +137,14 @@ impl std::ops::BitOrAssign<MouseButton> for MouseButtons {
     }
 }
 
-impl <const N: usize> From<[MouseButton; N]> for MouseButtons {
+impl<const N: usize> From<[MouseButton; N]> for MouseButtons {
     #[inline]
     fn from(value: [MouseButton; N]) -> Self {
         value.iter().fold(MouseButtons::new(), |r, b| r | *b)
     }
 }
 
-impl <const N: usize> From<&[MouseButton; N]> for MouseButtons {
+impl<const N: usize> From<&[MouseButton; N]> for MouseButtons {
     #[inline]
     fn from(value: &[MouseButton; N]) -> Self {
         value.iter().fold(MouseButtons::new(), |r, b| r | *b)
